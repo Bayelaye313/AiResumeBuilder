@@ -3,7 +3,7 @@ import { SignIn } from "@clerk/clerk-react"
 function SignInPage() {
   return (
 
-      <div>
+      <div className="flex justify-center py-10">
         <SignIn/>
       </div>
 
