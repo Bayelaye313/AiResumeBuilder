@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import './App.css'
 import { useUser} from '@clerk/clerk-react'
-import header from './components/customs/header'
+import Header from './components/customs/header'
 
 function App() {
   const { isSignedIn, user, isLoaded } = useUser()
@@ -12,7 +12,7 @@ function App() {
 
   return (
     <>
-      <header/>
+      <Header/>
       <Outlet/>
     </>
     
