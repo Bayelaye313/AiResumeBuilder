@@ -41,6 +41,8 @@ function AddResume() {
             if(resp)
             {
                 setLoading(false);
+                navigation('/dashboard/resume/'+uuid+'/edit')
+
             }
         },(error)=>{
             setLoading(false);
