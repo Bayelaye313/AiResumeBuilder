@@ -3,8 +3,9 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 function ResumeCards({resume}) {
-
+  console.log('docid',resume)
   return (
+    
     
     <Link to={'/dashboard/resume/'+resume.attributes.resumeId+'/edit'}>
         <div className='p-14 bg-secondary flex items-center 

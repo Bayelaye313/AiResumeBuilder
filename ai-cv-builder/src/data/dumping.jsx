@@ -3,9 +3,9 @@ export default {
     lastName: 'Diop',
     jobTitle: 'Full Stack Developer',
     address: 'Cheikh Anta Diop Street, Dakar, Senegal',
-    phone: '(+221)-77-123-4567',
-    email: 'abdoulaye.diop@example.com',
-    themeColor: "#008C45",  // Senegal colors: green, yellow, red
+    phone: '(+221)-78-431-45-01',
+    email: 'bayelaye0510@gmail.com',
+    themeColor: "#008C45",
     summery: 'Passionate Full Stack Developer with over 5 years of experience in creating web and mobile applications. Expert in JavaScript and modern frameworks like React and Node.js. Capable of designing innovative solutions tailored to the needs of Senegalese and African businesses.',
     experience: [
         {

@@ -7,7 +7,8 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-  } from "@/components/ui/dialog"
+  }
+from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { v4 as uuidv4 } from 'uuid';
@@ -21,8 +22,9 @@ function AddResume() {
 
     const [openDialog,setOpenDialog]=useState(false)
     const [resumeTitle,setResumeTitle]=useState();
-    const {user}=useUser();
     const [loading,setLoading]=useState(false);
+    const {user}=useUser();
+
     const navigation=useNavigate();
     const onCreate=async()=>{
         setLoading(true)
@@ -37,7 +39,7 @@ function AddResume() {
         }
 
         GlobalApi.CreateNewResume(data).then(resp=>{
-            console.log(resp);
+            console.log(data.data.resumeId);
             if(resp)
             {
                 setLoading(false);

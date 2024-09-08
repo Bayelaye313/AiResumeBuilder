@@ -20,7 +20,7 @@ function SkillsDetails({ resumeInfos }) {
               <div className='h-2 rounded-lg'
                 style={{
                   backgroundColor: resumeInfos?.themeColor,
-                  width: Math.min(skill?.rating, 100) + '%' // Cap at 100%
+                  width: Math.min(skill?.rating, 100) + '%'
                 }}
               >
               </div>
