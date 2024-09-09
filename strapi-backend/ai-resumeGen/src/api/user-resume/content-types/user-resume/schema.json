@@ -24,16 +24,16 @@
     "userEmail": {
       "type": "email"
     },
-    "adress": {
-      "type": "string"
-    },
-    "jobTitle": {
+    "address": {
       "type": "string"
     },
     "phone": {
       "type": "string"
     },
     "email": {
+      "type": "string"
+    },
+    "jobTitle": {
       "type": "string"
     }
   }

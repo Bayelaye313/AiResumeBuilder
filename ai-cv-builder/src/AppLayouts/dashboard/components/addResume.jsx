@@ -39,7 +39,7 @@ function AddResume() {
         }
 
         GlobalApi.CreateNewResume(data).then(resp=>{
-            console.log(data.data.resumeId);
+            console.log(data.data);
             if(resp)
             {
                 setLoading(false);
