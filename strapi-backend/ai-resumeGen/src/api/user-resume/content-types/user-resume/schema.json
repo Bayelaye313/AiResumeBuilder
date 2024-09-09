@@ -35,6 +35,9 @@
     },
     "jobTitle": {
       "type": "string"
+    },
+    "summery": {
+      "type": "text"
     }
   }
 }
