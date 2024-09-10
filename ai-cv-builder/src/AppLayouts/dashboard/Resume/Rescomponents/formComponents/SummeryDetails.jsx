@@ -4,8 +4,12 @@ import { Button } from "@/components/ui/button";
 import { InfosContext } from "@/HandleContext/InfosContext";
 import { useParams } from "react-router-dom";
 import GlobalApi from "../../../../../../services/GlobalApi";
-import { LoaderCircle } from "lucide-react";
+import { Brain, LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
+import { AiChatSession } from "../../../../../../services/geminiModal";
+
+const summeryPrompt =
+  "jobTitle: Backend developper; from job title generate a summery for my resume within 4-5 line.";
 
 function SummeryDetails({ ActiveNext }) {
   const { resumeInfos, setResumeInfos } = useContext(InfosContext);
@@ -20,6 +24,17 @@ function SummeryDetails({ ActiveNext }) {
       }));
     }
   }, [summeryData]);
+
+  const GenerateSummeryFromAI = async () => {
+    setLoading(true);
+    const PROMPT = summeryPrompt.replace("{jobTitle}", resumeInfos?.jobTitle);
+    console.log(PROMPT);
+    const result = await AiChatSession.sendMessage(PROMPT);
+    console.log(JSON.parse(result.response.text()));
+
+    setAiGenerateSummeryList(JSON.parse(result.response.text()));
+    setLoading(false);
+  };
 
   const onSave = (e) => {
     e.preventDefault();
@@ -57,7 +72,9 @@ function SummeryDetails({ ActiveNext }) {
             variant="outline"
             size="sm"
             className=" border-primary"
+            onClick={() => GenerateSummeryFromAI()}
           >
+            <Brain className="w-4 h-4" />
             Ai generate summery
           </Button>
         </div>
