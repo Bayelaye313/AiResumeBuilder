@@ -1,47 +1,65 @@
 import React, { useState } from "react";
 import PersonalDetails from "./formComponents/PersonalDetails";
-import { ArrowLeft, ArrowRight, LayoutGrid } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import SummeryDetails from "./formComponents/SummeryDetails";
 import ExperienceDetails from "./formComponents/ExperienceDetails";
+import Education from "./formComponents/Education";
+import Skills from "./formComponents/Skills";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Navigate } from "react-router-dom";
+import ProgressTracker from "@/components/customs/ProgressTracker";
 function FormSection() {
   const [step, setStep] = useState(1);
   const [ActiveNext, setActiveNext] = useState(false);
+
+  const steps = [
+    "Personal Details",
+    "Summary",
+    "Experience",
+    "Education",
+    "Skills",
+    "Finish & Preview",
+  ];
+
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <Button variant="outline" size="sm" className="flex gap-2">
-          {" "}
-          <LayoutGrid /> Theme
-        </Button>
-        <div className="flex justify-end gap-2">
-          {step > 1 && (
-            <Button
-              className="flex gap-2"
-              size="sm"
-              onClick={() => setStep(step - 1)}
-            >
-              {" "}
-              <ArrowLeft /> Prev{" "}
-            </Button>
-          )}
+      {/* Progress Tracker */}
+      <ProgressTracker steps={steps} currentStep={step} />
+
+      <div className="flex justify-end gap-2 mb-4">
+        {/* Previous Button */}
+        {step > 1 && (
           <Button
-            disabled={!ActiveNext}
+            className="flex gap-2"
             size="sm"
-            onClick={() => setStep(step + 1)}
+            onClick={() => setStep(step - 1)}
           >
-            {" "}
-            Next
-            <ArrowRight />{" "}
+            <ArrowLeft /> Prev
           </Button>
-        </div>
+        )}
+        {/* Next Button */}
+        <Button
+          disabled={!ActiveNext}
+          size="sm"
+          onClick={() => setStep(step + 1)}
+        >
+          Next <ArrowRight />
+        </Button>
       </div>
-      {step == 1 ? (
+
+      {/* Form Sections */}
+      {step === 1 ? (
         <PersonalDetails ActiveNext={(e) => setActiveNext(e)} />
-      ) : step == 2 ? (
+      ) : step === 2 ? (
         <SummeryDetails ActiveNext={(e) => setActiveNext(e)} />
-      ) : step == 3 ? (
+      ) : step === 3 ? (
         <ExperienceDetails ActiveNext={(e) => setActiveNext(e)} />
+      ) : step === 4 ? (
+        <Education ActiveNext={(e) => setActiveNext(e)} />
+      ) : step === 5 ? (
+        <Skills ActiveNext={(e) => setActiveNext(e)} />
+      ) : step === 6 ? (
+        <Navigate to={`/my-resume/${resumeId}/view`} />
       ) : null}
     </div>
   );

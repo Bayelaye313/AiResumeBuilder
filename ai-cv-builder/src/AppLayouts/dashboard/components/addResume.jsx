@@ -1,4 +1,4 @@
-import { Loader2, PlusSquare } from "lucide-react";
+import { Loader2, PlusSquare, X } from "lucide-react";
 import React, { useState } from "react";
 import {
   Dialog,
@@ -7,21 +7,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { v4 as uuidv4 } from "uuid";
 import GlobalApi from "../../../../services/GlobalApi";
 import { useUser } from "@clerk/clerk-react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function AddResume() {
   const [openDialog, setOpenDialog] = useState(false);
-  const [resumeTitle, setResumeTitle] = useState();
+  const [resumeTitle, setResumeTitle] = useState("");
   const [loading, setLoading] = useState(false);
   const { user } = useUser();
-
   const navigation = useNavigate();
+
   const onCreate = async () => {
     setLoading(true);
     const uuid = uuidv4();
@@ -36,9 +37,9 @@ function AddResume() {
 
     GlobalApi.CreateNewResume(data).then(
       (resp) => {
-        // console.log(data.data);
         if (resp) {
           setLoading(false);
+          setOpenDialog(false); // Close dialog after creation
           navigation("/dashboard/resume/" + uuid + "/edit");
         }
       },
@@ -47,6 +48,7 @@ function AddResume() {
       }
     );
   };
+
   return (
     <div>
       <div
@@ -59,32 +61,34 @@ function AddResume() {
         onClick={() => setOpenDialog(true)}
       >
         <div className="p-2">
-          <PlusSquare
-            color="#fff"
-            className="bg-primary w-8 h-8 rounded-sm  "
-          />
+          <PlusSquare color="#fff" className="bg-primary w-8 h-8 rounded-sm" />
         </div>
-        <div className="py-2 ">
-          <h2 className="font-bold text-lg mb-2">Build a New Resume</h2>
+        <div className="py-2">
+          <h2 className="font-bold text-lg mb-2">Create a New Resume</h2>
           <p>
-            We recommended creating a custom resume for each job application.
+            It's recommended to customize a resume for each job application.
           </p>
         </div>
       </div>
 
-      <Dialog open={openDialog}>
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create New Resume</DialogTitle>
+            <DialogTitle>Create Your Resume</DialogTitle>
+            <DialogClose asChild>
+              {/* <Button variant="ghost" onClick={() => setOpenDialog(false)}>
+                <X className="w-6 h-6" />
+              </Button> */}
+            </DialogClose>
             <DialogDescription>
-              <p>Add a title for your new resume</p>
+              <p>Please provide a title for your new resume to get started.</p>
               <Input
                 className="my-2"
-                placeholder="Ex.Frontend Developper Resume"
+                placeholder="e.g., Frontend Developer Resume"
                 onChange={(e) => setResumeTitle(e.target.value)}
               />
             </DialogDescription>
-            <div className="flex justify-end gap-5">
+            <div className="flex justify-end gap-5 mt-4">
               <Button onClick={() => setOpenDialog(false)} variant="ghost">
                 Cancel
               </Button>

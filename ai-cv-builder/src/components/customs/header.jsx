@@ -3,38 +3,43 @@ import { Link } from "react-router-dom";
 import { useUser, UserButton } from "@clerk/clerk-react";
 
 function Header() {
-  const { isSignedIn, user } = useUser();
+  const { isSignedIn } = useUser(); // Destructure to make it clear
 
   return (
-    <div className="p-0 px-3 flex justify-between shadow-md items-center">
-      <div className="flex justify-between items-center">
-        <img
-          loading="lazy"
-          src="../images/logo.jpg"
-          alt=""
-          width={80}
-          height={80}
-        />
-        <p className="flex items-center text-2xl font-bold animate-slidein">
-          EASE
-        </p>
+    <header className="p-4 px-6 flex justify-between items-center shadow-md bg-white">
+      {/* Branding Section */}
+      <div className="flex items-center">
+        <Link to="/">
+          <img
+            loading="lazy"
+            src="/images/logo.jpg"
+            alt="EASE Logo"
+            width={80}
+            height={80}
+            className="hover:opacity-90 transition-opacity duration-300"
+          />
+        </Link>
+        <p className="ml-2 text-2xl font-bold animate-slidein">EASE</p>
       </div>
 
-      {isSignedIn ? (
-        <div className=" gap-2 flex items-center ">
-          <Link to={"/dashboard"}>
-            <Button variant="outline" hover:bg-sky-700>
-              Dashboard
-            </Button>
+      {/* User Interaction Section */}
+      <nav>
+        {isSignedIn ? (
+          <div className="flex items-center gap-2">
+            <Link to="/dashboard" aria-label="Dashboard">
+              <Button variant="outline" className="hover:bg-sky-700">
+                Dashboard
+              </Button>
+            </Link>
+            <UserButton />
+          </div>
+        ) : (
+          <Link to="/auth/signIn" aria-label="Login">
+            <Button>Login</Button>
           </Link>
-          <UserButton></UserButton>
-        </div>
-      ) : (
-        <Link to={"/auth/signIn"}>
-          <Button>Login</Button>
-        </Link>
-      )}
-    </div>
+        )}
+      </nav>
+    </header>
   );
 }
 
