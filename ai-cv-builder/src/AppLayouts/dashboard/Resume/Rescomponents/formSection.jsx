@@ -40,7 +40,7 @@ function FormSection() {
         <PersonalDetails ActiveNext={(e) => setActiveNext(e)} />
       ) : step == 2 ? (
         <SummeryDetails ActiveNext={(e) => setActiveNext(e)} />
-      ) : step == 33 ? (
+      ) : step == 3 ? (
         <ExperienceDetails ActiveNext={(e) => setActiveNext(e)} />
       ) : null}
     </div>

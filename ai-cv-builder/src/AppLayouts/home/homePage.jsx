@@ -1,12 +1,14 @@
-import Header from "@/components/customs/header"
-import { UserButton } from '@clerk/clerk-react'
+import Header from "@/components/customs/header";
+import BodyPage from "@/components/customs/BodyPage";
+import { UserButton } from "@clerk/clerk-react";
 
 function HomePage() {
   return (
-    <div >
-       <Header/>
+    <div>
+      <Header />
+      <BodyPage />
     </div>
-  )
+  );
 }
 
-export default HomePage
+export default HomePage;
