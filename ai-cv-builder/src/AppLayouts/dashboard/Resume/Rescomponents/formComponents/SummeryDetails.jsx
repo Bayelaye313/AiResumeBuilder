@@ -4,7 +4,13 @@ import { Button } from "@/components/ui/button";
 import { InfosContext } from "@/HandleContext/InfosContext";
 import { useParams } from "react-router-dom";
 import GlobalApi from "../../../../../../services/GlobalApi";
-import { Brain, LoaderCircle } from "lucide-react";
+import {
+  Brain,
+  Flashlight,
+  FlashlightIcon,
+  LoaderCircle,
+  Zap,
+} from "lucide-react";
 import { toast } from "sonner";
 import { AiChatSession } from "../../../../../../services/geminiModal";
 
@@ -82,7 +88,7 @@ function SummeryDetails({ ActiveNext }) {
             {aiLoading ? (
               <LoaderCircle className="animate-spin" />
             ) : (
-              <Brain color="#0000ff" className="w-4 h-4" />
+              <Zap color="#0000ff" className="w-4 h-4" />
             )}
             {aiLoading ? "Generating..." : "AI Generate Summary"}
           </Button>
