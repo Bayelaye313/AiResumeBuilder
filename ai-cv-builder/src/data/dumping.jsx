@@ -8,7 +8,7 @@ export default {
   themeColor: "#008C45",
   summery:
     "Passionate Full Stack Developer with over 5 years of experience in creating web and mobile applications. Expert in JavaScript and modern frameworks like React and Node.js. Capable of designing innovative solutions tailored to the needs of Senegalese and African businesses.",
-  Experience: [
+  experience: [
     {
       id: 1,
       title: "Full Stack Developer",

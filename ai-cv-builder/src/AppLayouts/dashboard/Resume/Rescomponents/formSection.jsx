@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import PersonalDetails from "./formComponents/PersonalDetails";
 import SummeryDetails from "./formComponents/SummeryDetails";
-import ExperienceDetails from "./formComponents/ExperienceDetails";
 import Education from "./formComponents/Education";
 import Skills from "./formComponents/Skills";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navigate } from "react-router-dom";
 import ProgressTracker from "@/components/customs/ProgressTracker";
+import Experience from "./formComponents/ExperienceDetails";
 function FormSection() {
   const [step, setStep] = useState(1);
   const [ActiveNext, setActiveNext] = useState(false);
@@ -53,7 +53,7 @@ function FormSection() {
       ) : step === 2 ? (
         <SummeryDetails ActiveNext={(e) => setActiveNext(e)} />
       ) : step === 3 ? (
-        <ExperienceDetails ActiveNext={(e) => setActiveNext(e)} />
+        <Experience ActiveNext={(e) => setActiveNext(e)} />
       ) : step === 4 ? (
         <Education ActiveNext={(e) => setActiveNext(e)} />
       ) : step === 5 ? (
