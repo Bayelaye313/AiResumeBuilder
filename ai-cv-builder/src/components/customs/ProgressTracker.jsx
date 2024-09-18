@@ -2,12 +2,12 @@ import React from "react";
 
 const ProgressTracker = ({ steps, currentStep }) => {
   return (
-    <div className="flex items-center justify-between w-full max-w-xl mb-5 ">
+    <div className="flex items-center justify-between w-full max-w-xl mb-15 ">
       {steps.map((stepName, index) => (
         <div key={index} className="flex items-center">
           {/* Rectangle for each step */}
           <div
-            className={`px-4 py-2 rounded-lg border-2 text-sm font-semibold ${
+            className={`px-5 py-2 rounded-lg border-2 text-sm font-semibold ${
               index + 1 <= currentStep
                 ? "bg-primary text-white border-white"
                 : "bg-gray-300 text-gray-700 border-gray-300"

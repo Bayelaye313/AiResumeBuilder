@@ -13,7 +13,7 @@ function EditResume() {
   }, []);
   return (
     <InfosContext.Provider value={{ resumeInfos, setResumeInfos }}>
-      <div className="grid grid-cols-1 md:grid-cols-1 p-10 gap-10 ">
+      <div className="grid grid-cols-2 md:grid-cols-2 p-10 gap-10 ">
         <FormSection />
         <ResPreview />
       </div>

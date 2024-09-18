@@ -1,9 +1,8 @@
 {
   "collectionName": "components_experience_experiences",
   "info": {
-    "displayName": "Experience",
-    "icon": "arrowUp",
-    "description": ""
+    "displayName": "experience",
+    "icon": "handHeart"
   },
   "options": {},
   "attributes": {
@@ -13,10 +12,10 @@
     "companyName": {
       "type": "string"
     },
-    "state": {
+    "city": {
       "type": "string"
     },
-    "city": {
+    "state": {
       "type": "string"
     },
     "startDate": {
@@ -26,7 +25,7 @@
       "type": "string"
     },
     "workSummery": {
-      "type": "text"
+      "type": "string"
     }
   }
 }

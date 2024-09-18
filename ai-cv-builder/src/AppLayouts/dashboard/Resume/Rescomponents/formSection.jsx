@@ -13,12 +13,12 @@ function FormSection() {
   const [ActiveNext, setActiveNext] = useState(false);
 
   const steps = [
-    "Personal Details",
+    "Contact",
     "Summary",
     "Experience",
     "Education",
     "Skills",
-    "Finish & Preview",
+    "Preview",
   ];
 
   return (
@@ -26,7 +26,7 @@ function FormSection() {
       {/* Progress Tracker */}
       <ProgressTracker steps={steps} currentStep={step} />
 
-      <div className="flex justify-end gap-2 mb-4">
+      <div className="flex justify-end gap-2 mb-4 my-4">
         {/* Previous Button */}
         {step > 1 && (
           <Button
