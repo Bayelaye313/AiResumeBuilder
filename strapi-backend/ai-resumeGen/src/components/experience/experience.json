@@ -1,7 +1,9 @@
 {
   "collectionName": "components_experience_experiences",
   "info": {
-    "displayName": "Experience"
+    "displayName": "Experience",
+    "icon": "arrowUp",
+    "description": ""
   },
   "options": {},
   "attributes": {

@@ -22,43 +22,58 @@ function Experience() {
   const [experienceList, setExperienceList] = useState([]);
   const [loading, setLoading] = useState(false);
   const params = useParams();
-
   const { resumeInfos, setResumeInfos } = useContext(InfosContext);
 
+  // Handle input changes for experience list
   const handleChange = (index, event) => {
-    const newEntries = experienceList.slice();
+    const newEntries = [...experienceList];
     const { name, value } = event.target;
     newEntries[index][name] = value;
     setExperienceList(newEntries);
   };
 
+  // Add a new experience entry
   const AddNewExperience = () => {
     setExperienceList([...experienceList, formData]);
   };
 
+  // Remove the last experience entry
   const RemoveExperience = () => {
-    setExperienceList((experienceList) => experienceList.slice(0, -1));
+    setExperienceList(experienceList.slice(0, -1));
   };
 
+  // Handle RichTextEditor changes
   const handleRichTextEditor = (value, name, index) => {
-    const newEntries = experienceList.slice();
+    const newEntries = [...experienceList];
     newEntries[index][name] = value;
     setExperienceList(newEntries);
   };
 
   useEffect(() => {
     if (resumeInfos?.experience?.length > 0) {
-      setExperienceList(resumeInfos.experience);
+      // Définir experienceList seulement si les données ont changé
+      if (
+        JSON.stringify(experienceList) !==
+        JSON.stringify(resumeInfos.experience)
+      ) {
+        setExperienceList(resumeInfos.experience);
+      }
     }
   }, [resumeInfos]);
 
   useEffect(() => {
-    setResumeInfos({
-      ...resumeInfos,
-      experience: experienceList,
-    });
+    // Évitez la mise à jour si experienceList est inchangé
+    if (
+      JSON.stringify(resumeInfos.experience) !== JSON.stringify(experienceList)
+    ) {
+      setResumeInfos((prevInfos) => ({
+        ...prevInfos,
+        experience: experienceList,
+      }));
+    }
   }, [experienceList]);
 
+  // Save experience details
   const onSave = () => {
     setLoading(true);
     const data = {
@@ -67,16 +82,15 @@ function Experience() {
       },
     };
 
-    GlobalApi.UpdateResumeDetail(params.resumeId, data).then(
-      (res) => {
+    GlobalApi.UpdateResumeDetail(params.resumeId, data)
+      .then(() => {
         setLoading(false);
         toast("Details updated!");
-      },
-      (error) => {
+      })
+      .catch(() => {
         setLoading(false);
         toast.error("Failed to update experience details");
-      }
-    );
+      });
   };
 
   return (
@@ -168,6 +182,7 @@ function Experience() {
                   EditOnChange={(value) =>
                     handleRichTextEditor(value, "workSummery", index)
                   }
+                  index={index}
                 />
               </div>
             </div>

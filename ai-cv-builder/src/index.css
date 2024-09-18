@@ -11,6 +11,15 @@
   list-style: decimal;
   padding-left: 2em;
 }
+/* Assurez-vous que l'éditeur a un alignement à gauche */
+.editor-container {
+  text-align: left;
+  /* Vous pouvez aussi ajouter d'autres styles pour le confort d'écriture */
+  padding: 10px;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
 
 @layer base {
   :root {

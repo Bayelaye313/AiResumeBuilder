@@ -4,6 +4,8 @@ export interface ExperienceExperience extends Schema.Component {
   collectionName: 'components_experience_experiences';
   info: {
     displayName: 'Experience';
+    icon: 'arrowUp';
+    description: '';
   };
   attributes: {
     title: Attribute.String;

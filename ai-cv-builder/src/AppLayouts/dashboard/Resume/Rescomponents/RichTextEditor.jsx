@@ -1,56 +1,95 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import {
   BtnBold,
   BtnBulletList,
-  BtnClearFormatting,
   BtnItalic,
   BtnLink,
   BtnNumberedList,
-  BtnRedo,
   BtnStrikeThrough,
-  BtnStyles,
-  BtnUnderline,
-  BtnUndo,
-  HtmlButton,
   Separator,
   Toolbar,
   Editor,
   EditorProvider,
+  BtnUnderline,
 } from "react-simple-wysiwyg";
 import { AiChatSession } from "./../../../../../services/geminiModal";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle, Zap } from "lucide-react";
 import { InfosContext } from "@/HandleContext/InfosContext";
-import { useContext, useState, useEffect } from "react";
-const PROMPT =
-  "position titile: {positionTitle} , Depends on position title give me 5-7 bullet points for my experience in resume (Please do not add experince level and No JSON array) , give me result in HTML tags";
+import { toast } from "sonner";
+
+const PROMPT = `
+position title: {positionTitle}, 
+Depends on position title give me 5-7 bullet points for my experience in resume 
+(Please do not add experience level and No JSON array), 
+give me result in HTML tags
+`;
 
 function RichTextEditor({ EditOnChange, index, defaultValue }) {
   const [value, setValue] = useState(defaultValue);
   const { resumeInfos, setResumeInfos } = useContext(InfosContext);
   const [loading, setLoading] = useState(false);
+
+  const cleanHtmlResponse = (response) => {
+    // Suppression des caractères de début et fin {"experience": [...]}
+    let cleanedResponse = response
+      .replace(/^\{"experience":\s*\[?/, "") // Enlève '{"experience": ['
+      .replace(/\]?\s*}\s*$/, "") // Enlève ']}'
+      .replace(/\n\s*"\s*,\s*"\s*/g, "\n") // Supprime les guillemets et les virgules entre les éléments
+      .replace(/\\"/g, '"') // Remplace les guillemets échappés
+      .replace(/",\s*"/g, "\n"); // Supprime les guillemets et les virgules restantes
+
+    // Enlève les guillemets autour des éléments et nettoie les espaces
+    cleanedResponse = cleanedResponse
+      .replace(/^"\s*|\s*"$/g, "") // Enlève les guillemets en début et fin de chaîne
+      .replace(/\s+/g, " "); // Nettoie les espaces multiples
+
+    return cleanedResponse;
+  };
   const GenerateSummeryFromAI = async () => {
-    if (!resumeInfos?.Experience[index]?.title) {
+    if (!resumeInfos?.experience?.[index]) {
+      toast("Experience entry does not exist for the provided index.");
+      return;
+    }
+    if (!resumeInfos.experience[index]?.title) {
       toast("Please Add Position Title");
       return;
     }
     setLoading(true);
-    const prompt = PROMPT.replace(
-      "{positionTitle}",
-      resumeInfos.Experience[index].title
-    );
+    try {
+      const prompt = PROMPT.replace(
+        "{positionTitle}",
+        resumeInfos.experience[index].title
+      );
 
-    const result = await AiChatSession.sendMessage(prompt);
-    console.log(result.response.text());
-    const resp = result.response.text();
-    setValue(resp.replace("[", "").replace("]", ""));
-    setLoading(false);
+      const result = await AiChatSession.sendMessage(prompt);
+      const responseText = await result.response.text();
+
+      // Nettoyer et formater la réponse
+      const cleanedResponse = cleanHtmlResponse(responseText);
+
+      setValue(cleanedResponse);
+      EditOnChange(cleanedResponse);
+
+      // Optionnellement mettre à jour resumeInfos si nécessaire
+      const updatedExperience = [...resumeInfos.experience];
+      updatedExperience[index].workSummery = cleanedResponse;
+      setResumeInfos({
+        ...resumeInfos,
+        experience: updatedExperience,
+      });
+    } catch (error) {
+      console.error("Error generating summary:", error);
+      toast.error("Failed to generate summary from AI");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div>
       <div className="flex justify-between my-2">
-        <label className="text-xs">Summery</label>
+        <label className="text-xs">Summary</label>
         <Button
           variant="outline"
           size="sm"
@@ -69,16 +108,11 @@ function RichTextEditor({ EditOnChange, index, defaultValue }) {
       </div>
       <EditorProvider>
         <Editor
+          className="editor-container"
           value={value}
-          onChange={(ev) => {
-            setValue(ev.target.value);
-            EditOnChange(ev);
-          }}
+          onChange={(e) => setValue(e.target.value)}
         >
           <Toolbar>
-            <BtnUndo />
-            <BtnRedo />
-            <Separator />
             <BtnBold />
             <BtnItalic />
             <BtnUnderline />
@@ -88,7 +122,6 @@ function RichTextEditor({ EditOnChange, index, defaultValue }) {
             <BtnBulletList />
             <Separator />
             <BtnLink />
-            <Separator />
           </Toolbar>
         </Editor>
       </EditorProvider>
