@@ -44,10 +44,15 @@
       "repeatable": true,
       "component": "education.education"
     },
-    "Experience": {
+    "experience": {
       "type": "component",
       "repeatable": true,
       "component": "experience.experience"
+    },
+    "skills": {
+      "type": "component",
+      "repeatable": true,
+      "component": "skills.skills"
     }
   }
 }

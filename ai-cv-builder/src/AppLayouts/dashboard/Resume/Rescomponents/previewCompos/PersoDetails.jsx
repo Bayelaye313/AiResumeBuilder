@@ -10,8 +10,7 @@ function PersoDetails({ resumeInfos }) {
         }}
       >
         {" "}
-        {resumeInfos?.firstName.toUpperCase()}{" "}
-        {resumeInfos?.lastName.toUpperCase()}{" "}
+        {resumeInfos?.firstName} {resumeInfos?.lastName}{" "}
       </h2>
       <h2 className="text-center text-xs font-medium">
         {" "}

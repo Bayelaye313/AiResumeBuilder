@@ -1,10 +1,24 @@
 import type { Schema, Attribute } from '@strapi/strapi';
 
+export interface SkillsSkills extends Schema.Component {
+  collectionName: 'components_skills_skills';
+  info: {
+    displayName: 'skills';
+    icon: 'key';
+    description: '';
+  };
+  attributes: {
+    name: Attribute.String;
+    rating: Attribute.Integer;
+  };
+}
+
 export interface ExperienceExperience extends Schema.Component {
   collectionName: 'components_experience_experiences';
   info: {
     displayName: 'experience';
     icon: 'handHeart';
+    description: '';
   };
   attributes: {
     title: Attribute.String;
@@ -36,6 +50,7 @@ export interface EducationEducation extends Schema.Component {
 declare module '@strapi/types' {
   export module Shared {
     export interface Components {
+      'skills.skills': SkillsSkills;
       'experience.experience': ExperienceExperience;
       'education.education': EducationEducation;
     }
