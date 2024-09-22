@@ -9,12 +9,12 @@ function PersoDetails({ resumeInfos }) {
           color: resumeInfos?.themeColor,
         }}
       >
-        {" "}
-        {resumeInfos?.firstName} {resumeInfos?.lastName}{" "}
+        {/* Vérifiez bien que les valeurs existent */}
+        {resumeInfos?.firstName || "First Name"}{" "}
+        {resumeInfos?.lastName || "Last Name"}
       </h2>
       <h2 className="text-center text-xs font-medium">
-        {" "}
-        {resumeInfos?.jobTitle}
+        {resumeInfos?.jobTitle || "Job Title"}
       </h2>
       <h2
         className="text-center text-xs font-normal"
@@ -22,8 +22,7 @@ function PersoDetails({ resumeInfos }) {
           color: resumeInfos?.themeColor,
         }}
       >
-        {" "}
-        {resumeInfos?.address}
+        {resumeInfos?.address || "Address"}
       </h2>
       <div className="flex justify-between">
         <h2
@@ -32,8 +31,7 @@ function PersoDetails({ resumeInfos }) {
             color: resumeInfos?.themeColor,
           }}
         >
-          {" "}
-          {resumeInfos?.phone}
+          {resumeInfos?.phone || "Phone"}
         </h2>
         <h2
           className="text-xs font-normal"
@@ -41,8 +39,7 @@ function PersoDetails({ resumeInfos }) {
             color: resumeInfos?.themeColor,
           }}
         >
-          {" "}
-          {resumeInfos?.email}
+          {resumeInfos?.email || "Email"}
         </h2>
       </div>
       <hr

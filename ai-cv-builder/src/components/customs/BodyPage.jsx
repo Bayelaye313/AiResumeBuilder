@@ -13,7 +13,7 @@ function BodyPage() {
           builder powered by AI. Whether you're just starting or looking to
           improve your current resume, we've got you covered!
         </p>
-        <Link to="/auth/signIn">
+        <Link to="/dashboard">
           <button className="bg-primary text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-700 transition animate-slidein700">
             Get Started__It's Free
           </button>
