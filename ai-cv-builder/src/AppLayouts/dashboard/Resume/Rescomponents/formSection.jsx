@@ -1,15 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { Navigate } from "react-router-dom";
+import { InfosContext } from "@/HandleContext/InfosContext";
 import PersonalDetails from "./formComponents/PersonalDetails";
 import SummeryDetails from "./formComponents/SummeryDetails";
 import Education from "./formComponents/Education";
 import Skills from "./formComponents/Skills";
+import Experience from "./formComponents/ExperienceDetails";
+import ProgressTracker from "@/components/customs/ProgressTracker";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Navigate } from "react-router-dom";
-import ProgressTracker from "@/components/customs/ProgressTracker";
-import Experience from "./formComponents/ExperienceDetails";
+
 function FormSection() {
-  const [step, setStep] = useState(1);
+  const { resumeInfos } = useContext(InfosContext);
+  const [step, setStep] = useState(() => {
+    const savedStep = localStorage.getItem("resumeStep");
+    return savedStep ? JSON.parse(savedStep) : 1;
+  });
   const [ActiveNext, setActiveNext] = useState(false);
 
   const steps = [
@@ -21,13 +27,15 @@ function FormSection() {
     "Preview",
   ];
 
+  useEffect(() => {
+    localStorage.setItem("resumeStep", JSON.stringify(step));
+  }, [step]);
+
   return (
     <div>
-      {/* Progress Tracker */}
       <ProgressTracker steps={steps} currentStep={step} />
 
       <div className="flex justify-end gap-2 mb-4 my-4">
-        {/* Previous Button */}
         {step > 1 && (
           <Button
             className="flex gap-2"
@@ -37,7 +45,6 @@ function FormSection() {
             <ArrowLeft /> Prev
           </Button>
         )}
-        {/* Next Button */}
         <Button
           disabled={!ActiveNext}
           size="sm"
@@ -47,20 +54,12 @@ function FormSection() {
         </Button>
       </div>
 
-      {/* Form Sections */}
-      {step === 1 ? (
-        <PersonalDetails ActiveNext={(e) => setActiveNext(e)} />
-      ) : step === 2 ? (
-        <SummeryDetails ActiveNext={(e) => setActiveNext(e)} />
-      ) : step === 3 ? (
-        <Experience ActiveNext={(e) => setActiveNext(e)} />
-      ) : step === 4 ? (
-        <Education ActiveNext={(e) => setActiveNext(e)} />
-      ) : step === 5 ? (
-        <Skills ActiveNext={(e) => setActiveNext(e)} />
-      ) : step === 6 ? (
-        <Navigate to={`/my-resume/${resumeId}/view`} />
-      ) : null}
+      {step === 1 && <PersonalDetails ActiveNext={(e) => setActiveNext(e)} />}
+      {step === 2 && <SummeryDetails ActiveNext={(e) => setActiveNext(e)} />}
+      {step === 3 && <Experience ActiveNext={(e) => setActiveNext(e)} />}
+      {step === 4 && <Education ActiveNext={(e) => setActiveNext(e)} />}
+      {step === 5 && <Skills ActiveNext={(e) => setActiveNext(e)} />}
+      {step === 6 && <Navigate to={`/my-resume/${resumeId}/view`} />}
     </div>
   );
 }

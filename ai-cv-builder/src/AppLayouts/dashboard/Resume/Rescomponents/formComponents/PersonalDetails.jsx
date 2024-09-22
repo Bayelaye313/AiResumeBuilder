@@ -14,14 +14,14 @@ function PersonalDetails({ ActiveNext }) {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
 
-  // Récupérer les données du localStorage à chaque rechargement
   useEffect(() => {
     const storedData = localStorage.getItem("formData");
     if (storedData) {
       const parsedData = JSON.parse(storedData);
+      // console.log("Loaded data from localStorage:", parsedData);
       if (parsedData) {
-        setFormData(parsedData); // Mettre à jour le formulaire avec les données récupérées
-        setResumeInfos(parsedData); // Mettre à jour resumeInfos avec les données récupérées
+        setFormData(parsedData);
+        setResumeInfos(parsedData);
       }
     }
   }, []); // Ce useEffect ne se déclenche qu'une seule fois au montage du composant
@@ -34,11 +34,11 @@ function PersonalDetails({ ActiveNext }) {
       [name]: value,
     };
 
-    setFormData(updatedData); // Mettre à jour formData
-    setResumeInfos(updatedData); // Mettre à jour resumeInfos
+    setFormData(updatedData);
+    setResumeInfos(updatedData);
 
-    // Sauvegarder chaque modification dans le localStorage
     localStorage.setItem("formData", JSON.stringify(updatedData));
+    ActiveNext(true);
   };
 
   const onSave = (e) => {
@@ -48,8 +48,7 @@ function PersonalDetails({ ActiveNext }) {
 
     GlobalApi.UpdateResumeDetail(params?.resumeId, data).then(
       (resp) => {
-        console.log(resp);
-        ActiveNext(true); // Active le bouton suivant après la sauvegarde
+        ActiveNext(true);
         setLoading(false);
         toast("Details updated");
       },

@@ -23,21 +23,35 @@ function Education() {
     },
   ]);
 
+  // Charger les informations du localStorage
+  useEffect(() => {
+    const savedInfos = localStorage.getItem("resumeInfos");
+    console.log("Chargement depuis localStorage", savedInfos); // Vérifier les données chargées
+    if (savedInfos) {
+      const parsedInfos = JSON.parse(savedInfos);
+      setResumeInfos(parsedInfos);
+      setEducationalList(parsedInfos?.education || []);
+    }
+  }, [setResumeInfos]);
+
+  // Mettre à jour `educationalList` à partir de `resumeInfos`
   useEffect(() => {
     if (resumeInfos?.education) {
+      console.log("Mise à jour à partir de resumeInfos", resumeInfos.education);
       setEducationalList(resumeInfos.education);
     }
   }, [resumeInfos]);
+
   const handleChange = (event, index) => {
-    const newEntries = educationalList.slice();
     const { name, value } = event.target;
+    const newEntries = [...educationalList];
     newEntries[index][name] = value;
     setEducationalList(newEntries);
   };
 
   const AddNewEducation = () => {
-    setEducationalList([
-      ...educationalList,
+    setEducationalList((prev) => [
+      ...prev,
       {
         universityName: "",
         degree: "",
@@ -48,9 +62,11 @@ function Education() {
       },
     ]);
   };
+
   const RemoveEducation = () => {
-    setEducationalList((educationalList) => educationalList.slice(0, -1));
+    setEducationalList((prev) => prev.slice(0, -1));
   };
+
   const onSave = () => {
     setLoading(true);
     const data = {
@@ -59,25 +75,37 @@ function Education() {
       },
     };
 
-    GlobalApi.UpdateResumeDetail(params.resumeId, data).then(
-      (resp) => {
-        console.log(resp);
+    GlobalApi.UpdateResumeDetail(params.resumeId, data)
+      .then((resp) => {
+        console.log("Réponse de l'API", resp);
         setLoading(false);
-        toast("Details updated !");
-      },
-      (error) => {
+        toast("Details updated!");
+
+        // Mettre à jour `resumeInfos` et sauvegarder dans `localStorage`
+        setResumeInfos((prev) => {
+          const updatedInfos = { ...prev, education: educationalList };
+          console.log("Sauvegarde dans localStorage", updatedInfos); // Vérifier les données avant la sauvegarde
+          localStorage.setItem("resumeInfos", JSON.stringify(updatedInfos)); // Sauvegarde dans localStorage
+          return updatedInfos;
+        });
+      })
+      .catch((error) => {
         setLoading(false);
         toast("Server Error, Please try again!");
-      }
-    );
+      });
   };
 
+  // Sauvegarder automatiquement chaque changement de `educationalList`
   useEffect(() => {
-    setResumeInfos({
-      ...resumeInfos,
-      education: educationalList,
-    });
-  }, [educationalList]);
+    console.log("educationalList updated", educationalList);
+
+    if (resumeInfos && educationalList.length > 0) {
+      const updatedInfos = { ...resumeInfos, education: educationalList };
+      console.log("Sauvegarde automatique dans localStorage", updatedInfos); // Vérifier les données sauvegardées
+      localStorage.setItem("resumeInfos", JSON.stringify(updatedInfos));
+    }
+  }, [educationalList, resumeInfos]);
+
   return (
     <div className="p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-10">
       <h2 className="font-bold text-lg">Education</h2>
@@ -92,7 +120,7 @@ function Education() {
                   <Input
                     name="universityName"
                     onChange={(e) => handleChange(e, index)}
-                    defaultValue={item?.universityName}
+                    value={item?.universityName}
                   />
                 </div>
                 <div>
@@ -100,7 +128,7 @@ function Education() {
                   <Input
                     name="degree"
                     onChange={(e) => handleChange(e, index)}
-                    defaultValue={item?.degree}
+                    value={item?.degree}
                   />
                 </div>
                 <div>
@@ -108,7 +136,7 @@ function Education() {
                   <Input
                     name="major"
                     onChange={(e) => handleChange(e, index)}
-                    defaultValue={item?.major}
+                    value={item?.major}
                   />
                 </div>
                 <div>
@@ -117,7 +145,7 @@ function Education() {
                     type="date"
                     name="startDate"
                     onChange={(e) => handleChange(e, index)}
-                    defaultValue={item?.startDate}
+                    value={item?.startDate}
                   />
                 </div>
                 <div>
@@ -126,7 +154,7 @@ function Education() {
                     type="date"
                     name="endDate"
                     onChange={(e) => handleChange(e, index)}
-                    defaultValue={item?.endDate}
+                    value={item?.endDate}
                   />
                 </div>
                 <div className="col-span-2">
@@ -134,7 +162,7 @@ function Education() {
                   <Textarea
                     name="description"
                     onChange={(e) => handleChange(e, index)}
-                    defaultValue={item?.description}
+                    value={item?.description}
                   />
                 </div>
               </div>
@@ -152,7 +180,6 @@ function Education() {
             onClick={AddNewEducation}
             className="text-primary"
           >
-            {" "}
             + Add More Education
           </Button>
           <Button
@@ -160,15 +187,15 @@ function Education() {
             onClick={RemoveEducation}
             className="text-primary"
           >
-            {" "}
             - Remove
           </Button>
         </div>
-        <Button disabled={loading} onClick={() => onSave()}>
+        <Button disabled={loading} onClick={onSave}>
           {loading ? <LoaderCircle className="animate-spin" /> : "Save"}
         </Button>
       </div>
     </div>
   );
 }
+
 export default Education;

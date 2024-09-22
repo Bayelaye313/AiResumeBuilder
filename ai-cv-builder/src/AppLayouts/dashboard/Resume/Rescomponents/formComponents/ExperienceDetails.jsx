@@ -18,7 +18,7 @@ const formData = {
   workSummery: "",
 };
 
-function Experience() {
+function Experience({ ActiveNext }) {
   const [experienceList, setExperienceList] = useState([]);
   const [loading, setLoading] = useState(false);
   const params = useParams();
@@ -30,13 +30,15 @@ function Experience() {
     const { name, value } = event.target;
     newEntries[index][name] = value;
     setExperienceList(newEntries);
+    ActiveNext(true);
   };
 
   // Add a new experience entry
   const AddNewExperience = () => {
-    setExperienceList([...experienceList, formData]);
+    // Créez une copie de formData pour chaque nouvelle expérience
+    const newExperience = { ...formData };
+    setExperienceList([...experienceList, newExperience]);
   };
-
   // Remove the last experience entry
   const RemoveExperience = () => {
     setExperienceList(experienceList.slice(0, -1));
@@ -85,6 +87,7 @@ function Experience() {
     GlobalApi.UpdateResumeDetail(params.resumeId, data)
       .then(() => {
         setLoading(false);
+        ActiveNext(true);
         toast("Details updated!");
       })
       .catch(() => {

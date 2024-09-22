@@ -34,7 +34,9 @@ function ProfExpDetails({ resumeInfos }) {
           </h2>
           <div
             className="text-xs my-2"
-            dangerouslySetInnerHTML={{ __html: experience?.workSummery }}
+            dangerouslySetInnerHTML={{
+              __html: experience?.workSummery || "<p>No summary provided</p>",
+            }}
           />
         </div>
       ))}

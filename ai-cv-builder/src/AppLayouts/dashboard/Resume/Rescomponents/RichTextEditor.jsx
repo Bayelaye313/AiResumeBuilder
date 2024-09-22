@@ -31,21 +31,19 @@ function RichTextEditor({ EditOnChange, index, defaultValue }) {
   const [loading, setLoading] = useState(false);
 
   const cleanHtmlResponse = (response) => {
-    // Suppression des caractères de début et fin {"experience": [...]}
+    // Traite la réponse pour la convertir en HTML correct
     let cleanedResponse = response
-      .replace(/^\{"experience":\s*\[?/, "") // Enlève '{"experience": ['
-      .replace(/\]?\s*}\s*$/, "") // Enlève ']}'
-      .replace(/\n\s*"\s*,\s*"\s*/g, "\n") // Supprime les guillemets et les virgules entre les éléments
-      .replace(/\\"/g, '"') // Remplace les guillemets échappés
-      .replace(/",\s*"/g, "\n"); // Supprime les guillemets et les virgules restantes
-
-    // Enlève les guillemets autour des éléments et nettoie les espaces
-    cleanedResponse = cleanedResponse
-      .replace(/^"\s*|\s*"$/g, "") // Enlève les guillemets en début et fin de chaîne
-      .replace(/\s+/g, " "); // Nettoie les espaces multiples
+      .replace(/^\{"experience":\s*\[?/, "")
+      .replace(/\]?\s*}\s*$/, "")
+      .replace(/\n\s*"\s*,\s*"\s*/g, "\n")
+      .replace(/\\"/g, '"')
+      .replace(/",\s*"/g, "\n")
+      .replace(/^"\s*|\s*"$/g, "")
+      .replace(/\s+/g, " ");
 
     return cleanedResponse;
   };
+
   const GenerateSummeryFromAI = async () => {
     if (!resumeInfos?.experience?.[index]) {
       toast("Experience entry does not exist for the provided index.");
@@ -68,6 +66,7 @@ function RichTextEditor({ EditOnChange, index, defaultValue }) {
       // Nettoyer et formater la réponse
       const cleanedResponse = cleanHtmlResponse(responseText);
 
+      // Mettre à jour l'état local de l'éditeur
       setValue(cleanedResponse);
       EditOnChange(cleanedResponse);
 
@@ -110,7 +109,11 @@ function RichTextEditor({ EditOnChange, index, defaultValue }) {
         <Editor
           className="editor-container"
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            setValue(newValue);
+            EditOnChange(newValue);
+          }}
         >
           <Toolbar>
             <BtnBold />

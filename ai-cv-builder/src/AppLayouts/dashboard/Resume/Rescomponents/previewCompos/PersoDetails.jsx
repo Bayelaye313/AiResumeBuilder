@@ -9,7 +9,6 @@ function PersoDetails({ resumeInfos }) {
           color: resumeInfos?.themeColor,
         }}
       >
-        {/* Vérifiez bien que les valeurs existent */}
         {resumeInfos?.firstName || "First Name"}{" "}
         {resumeInfos?.lastName || "Last Name"}
       </h2>

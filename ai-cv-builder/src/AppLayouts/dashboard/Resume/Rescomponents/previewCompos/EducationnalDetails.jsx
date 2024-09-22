@@ -1,6 +1,9 @@
-import React from "react";
+import { useContext } from "react";
+import { InfosContext } from "@/HandleContext/InfosContext";
 
-function EducationnalDetails({ resumeInfos }) {
+function EducationnalDetails() {
+  const { resumeInfos } = useContext(InfosContext);
+
   return (
     <div className="my-6">
       <h2
@@ -43,5 +46,4 @@ function EducationnalDetails({ resumeInfos }) {
     </div>
   );
 }
-
 export default EducationnalDetails;

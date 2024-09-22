@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useContext } from "react";
+import { InfosContext } from "@/HandleContext/InfosContext";
 
-function SummeryDetails({resumeInfos}) {
+function SummeryDisplay() {
+  const { resumeInfos } = useContext(InfosContext);
+
   return (
-    <p className='text-xs'>
-    {resumeInfos?.summery}
-</p>
-  )
+    <p className="text-xs">{resumeInfos?.summery || "No summary available"}</p>
+  );
 }
 
-export default SummeryDetails
+export default SummeryDisplay;

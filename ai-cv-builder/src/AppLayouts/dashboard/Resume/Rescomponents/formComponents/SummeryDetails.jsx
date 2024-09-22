@@ -4,13 +4,7 @@ import { Button } from "@/components/ui/button";
 import { InfosContext } from "@/HandleContext/InfosContext";
 import { useParams } from "react-router-dom";
 import GlobalApi from "../../../../../../services/GlobalApi";
-import {
-  Brain,
-  Flashlight,
-  FlashlightIcon,
-  LoaderCircle,
-  Zap,
-} from "lucide-react";
+import { LoaderCircle, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { AiChatSession } from "../../../../../../services/geminiModal";
 
@@ -19,17 +13,27 @@ const summeryPrompt =
 
 function SummeryDetails({ ActiveNext }) {
   const { resumeInfos, setResumeInfos } = useContext(InfosContext);
-  const [summeryData, setSummeryData] = useState(resumeInfos?.summery || "");
+  const [summeryData, setSummeryData] = useState("");
   const [aiSummeryList, setAiSummeryList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const params = useParams();
 
   useEffect(() => {
-    if (summeryData) {
-      setResumeInfos((prevInfos) => ({ ...prevInfos, summery: summeryData }));
+    if (resumeInfos) {
+      setSummeryData(resumeInfos.summery || "");
     }
-  }, [summeryData]);
+  }, [resumeInfos]);
+
+  useEffect(() => {
+    // Check if the change is meaningful before updating the state
+    if (resumeInfos?.summery !== summeryData && summeryData !== "") {
+      const updatedResumeInfos = { ...resumeInfos, summery: summeryData };
+      setResumeInfos(updatedResumeInfos);
+      localStorage.setItem("resumeInfos", JSON.stringify(updatedResumeInfos));
+    }
+    // Add resumeInfos to the dependency array to avoid stale values
+  }, [summeryData, resumeInfos]);
 
   const generateSummeryFromAI = async () => {
     setAiLoading(true);
@@ -50,22 +54,25 @@ function SummeryDetails({ ActiveNext }) {
     }
   };
 
-  const saveSummery = (e) => {
+  const saveSummery = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     const data = { data: { summery: summeryData } };
-    GlobalApi.UpdateResumeDetail(params?.resumeId, data)
-      .then((resp) => {
-        ActiveNext(true);
-        toast.success("Summary updated successfully");
-      })
-      .catch(() => {
-        toast.error("Failed to update summary");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      await GlobalApi.UpdateResumeDetail(params?.resumeId, data);
+      toast.success("Summary updated successfully");
+      setResumeInfos({ ...resumeInfos, summery: summeryData });
+      localStorage.setItem(
+        "resumeInfos",
+        JSON.stringify({ ...resumeInfos, summery: summeryData })
+      );
+      ActiveNext(true);
+    } catch {
+      toast.error("Failed to update summary");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

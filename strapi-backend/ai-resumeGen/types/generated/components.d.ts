@@ -27,7 +27,7 @@ export interface ExperienceExperience extends Schema.Component {
     state: Attribute.String;
     startDate: Attribute.String;
     endDate: Attribute.String;
-    workSummery: Attribute.String;
+    workSummery: Attribute.Text;
   };
 }
 

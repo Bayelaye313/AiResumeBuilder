@@ -14,22 +14,25 @@ function EditResume() {
     if (storedResumeInfos) {
       setResumeInfos(storedResumeInfos);
     } else {
-      GetResumeInfos();
+      fetchResumeInfos();
     }
   }, []);
 
-  const GetResumeInfos = () => {
-    GlobalApi.GetResumeById(resumeId).then((resp) => {
-      const fetchedData = resp.data.data;
+  const fetchResumeInfos = async () => {
+    try {
+      const response = await GlobalApi.GetResumeById(resumeId);
+      const fetchedData = response.data.data;
+
       setResumeInfos(fetchedData);
-      localStorage.setItem("resumeInfos", JSON.stringify(fetchedData)); // Stockage dans localStorage
-    });
+      localStorage.setItem("resumeInfos", JSON.stringify(fetchedData));
+    } catch (error) {
+      console.error("Failed to fetch resume info:", error);
+    }
   };
 
   return (
     <InfosProvider value={{ resumeInfos, setResumeInfos }}>
-      {" "}
-      <div className="grid grid-cols-2 md:grid-cols-2 p-10 gap-10 ">
+      <div className="grid grid-cols-2 md:grid-cols-2 p-10 gap-10">
         <FormSection />
         <ResPreview />
       </div>
