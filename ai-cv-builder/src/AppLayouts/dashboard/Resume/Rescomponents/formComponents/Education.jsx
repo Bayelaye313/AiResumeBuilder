@@ -8,7 +8,7 @@ import GlobalApi from "./../../../../../../services/GlobalApi";
 import { toast } from "sonner";
 import { InfosContext } from "@/HandleContext/InfosContext";
 
-function Education() {
+function Education({ ActiveNext }) {
   const [loading, setLoading] = useState(false);
   const { resumeInfos, setResumeInfos } = useContext(InfosContext);
   const params = useParams();
@@ -23,28 +23,15 @@ function Education() {
     },
   ]);
 
-  // Charger les informations du localStorage
-  useEffect(() => {
-    const savedInfos = localStorage.getItem("resumeInfos");
-    console.log("Chargement depuis localStorage", savedInfos); // Vérifier les données chargées
-    if (savedInfos) {
-      const parsedInfos = JSON.parse(savedInfos);
-      setResumeInfos(parsedInfos);
-      setEducationalList(parsedInfos?.education || []);
-    }
-  }, [setResumeInfos]);
-
-  // Mettre à jour `educationalList` à partir de `resumeInfos`
   useEffect(() => {
     if (resumeInfos?.education) {
-      console.log("Mise à jour à partir de resumeInfos", resumeInfos.education);
       setEducationalList(resumeInfos.education);
     }
   }, [resumeInfos]);
 
   const handleChange = (event, index) => {
-    const { name, value } = event.target;
     const newEntries = [...educationalList];
+    const { name, value } = event.target;
     newEntries[index][name] = value;
     setEducationalList(newEntries);
   };
@@ -67,25 +54,33 @@ function Education() {
     setEducationalList((prev) => prev.slice(0, -1));
   };
 
+  // Fonction de validation pour éviter de sauvegarder les entrées vides
+  const validateEducation = () => {
+    return educationalList.filter(
+      (edu) => edu.universityName.trim() !== "" && edu.degree.trim() !== ""
+    );
+  };
+
   const onSave = () => {
     setLoading(true);
+    const validEducationalList = validateEducation();
+
     const data = {
       data: {
-        education: educationalList.map(({ id, ...rest }) => rest),
+        education: validEducationalList.map(({ id, ...rest }) => rest),
       },
     };
 
     GlobalApi.UpdateResumeDetail(params.resumeId, data)
       .then((resp) => {
-        console.log("Réponse de l'API", resp);
         setLoading(false);
+        ActiveNext(true);
         toast("Details updated!");
 
-        // Mettre à jour `resumeInfos` et sauvegarder dans `localStorage`
+        // Met à jour resumeInfos et localStorage avec les entrées valides
         setResumeInfos((prev) => {
-          const updatedInfos = { ...prev, education: educationalList };
-          console.log("Sauvegarde dans localStorage", updatedInfos); // Vérifier les données avant la sauvegarde
-          localStorage.setItem("resumeInfos", JSON.stringify(updatedInfos)); // Sauvegarde dans localStorage
+          const updatedInfos = { ...prev, education: validEducationalList };
+          localStorage.setItem("resumeInfos", JSON.stringify(updatedInfos)); // Sauvegarder dans localStorage
           return updatedInfos;
         });
       })
@@ -95,16 +90,29 @@ function Education() {
       });
   };
 
-  // Sauvegarder automatiquement chaque changement de `educationalList`
+  // Charger les données depuis localStorage au chargement initial
   useEffect(() => {
-    console.log("educationalList updated", educationalList);
-
-    if (resumeInfos && educationalList.length > 0) {
-      const updatedInfos = { ...resumeInfos, education: educationalList };
-      console.log("Sauvegarde automatique dans localStorage", updatedInfos); // Vérifier les données sauvegardées
-      localStorage.setItem("resumeInfos", JSON.stringify(updatedInfos));
+    const savedInfos = localStorage.getItem("resumeInfos");
+    if (savedInfos) {
+      setResumeInfos(JSON.parse(savedInfos));
     }
-  }, [educationalList, resumeInfos]);
+  }, []);
+
+  // Met à jour le localStorage chaque fois que educationalList change, en filtrant les entrées vides
+  useEffect(() => {
+    const validEducationalList = validateEducation();
+
+    setResumeInfos((prev) => {
+      if (
+        JSON.stringify(prev.education) !== JSON.stringify(validEducationalList)
+      ) {
+        const updatedInfos = { ...prev, education: validEducationalList };
+        localStorage.setItem("resumeInfos", JSON.stringify(updatedInfos)); // Sauvegarder dans localStorage
+        return updatedInfos;
+      }
+      return prev;
+    });
+  }, [educationalList]);
 
   return (
     <div className="p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-10">
