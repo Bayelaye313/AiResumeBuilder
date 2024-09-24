@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { InfosContext } from "@/HandleContext/InfosContext";
 
-function Skills() {
+function Skills({ ActiveNext }) {
   const { resumeId } = useParams();
   const { resumeInfos, setResumeInfos } = useContext(InfosContext);
 
@@ -76,6 +76,7 @@ function Skills() {
     GlobalApi.UpdateResumeDetail(resumeId, data)
       .then((resp) => {
         setLoading(false);
+        ActiveNext(true);
         localStorage.setItem("skillsList", JSON.stringify(skillsList));
         toast("Details updated !");
       })

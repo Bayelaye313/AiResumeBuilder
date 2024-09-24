@@ -10,6 +10,7 @@ import DashboardPage from "./AppLayouts/dashboard/dashboardPage.jsx";
 import { ClerkProvider } from "@clerk/clerk-react";
 import EditResume from "./AppLayouts/dashboard/Resume/[resumeID]/edit/editResume.jsx";
 import { InfosProvider } from "@/HandleContext/InfosContext"; // Importez le provider
+import ViewResume from "./viewMyResume/[resumeID]/ViewResume.jsx";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
   {
     path: "/auth/signIn",
     element: <SignInPage />,
+  },
+  {
+    path: "/viewMyResume/:resumeId/viewResume",
+    element: <ViewResume />,
   },
 ]);
 

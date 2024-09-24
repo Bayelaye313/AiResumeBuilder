@@ -9,7 +9,7 @@ function SkillsDetails({ resumeInfos }) {
           color: resumeInfos?.themeColor,
         }}
       >
-        Education
+        Skills
       </h2>
       <hr
         style={{

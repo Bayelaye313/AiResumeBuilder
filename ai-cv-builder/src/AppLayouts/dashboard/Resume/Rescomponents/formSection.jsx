@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { InfosContext } from "@/HandleContext/InfosContext";
 import PersonalDetails from "./formComponents/PersonalDetails";
 import SummeryDetails from "./formComponents/SummeryDetails";
@@ -11,6 +11,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 function FormSection() {
+  const { resumeId } = useParams();
   const { resumeInfos } = useContext(InfosContext);
   const [step, setStep] = useState(() => {
     const savedStep = localStorage.getItem("resumeStep");
@@ -59,7 +60,7 @@ function FormSection() {
       {step === 3 && <Experience ActiveNext={(e) => setActiveNext(e)} />}
       {step === 4 && <Education ActiveNext={(e) => setActiveNext(e)} />}
       {step === 5 && <Skills ActiveNext={(e) => setActiveNext(e)} />}
-      {step === 6 && <Navigate to={`/my-resume/${resumeId}/view`} />}
+      {step === 6 && <Navigate to={`/viewMyResume/${resumeId}/viewResume`} />}
     </div>
   );
 }
