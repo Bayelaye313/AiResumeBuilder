@@ -50,12 +50,16 @@ function DashboardPage() {
           </div>
         ) : resumeList.length > 0 ? (
           resumeList.map((resume, index) => (
-            <ResumeCards resume={resume} key={index} />
+            <ResumeCards
+              resume={resume}
+              key={index}
+              refreshData={fetchResumes}
+            />
           ))
         ) : (
-          <div className="col-span-full text-center text-sm text-muted-foreground">
-            <p>No resumes found. Start by creating a new one!</p>
-          </div>
+          [1, 2, 3, 4].map((item, index) => (
+            <div className="h-[280px] rounded-lg bg-slate-200 animate-pulse"></div>
+          ))
         )}
       </div>
     </div>
