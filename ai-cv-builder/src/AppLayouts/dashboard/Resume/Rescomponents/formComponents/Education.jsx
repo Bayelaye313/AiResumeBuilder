@@ -24,11 +24,13 @@ function Education({ ActiveNext }) {
   ]);
 
   useEffect(() => {
-    if (resumeInfos?.education) {
+    if (
+      resumeInfos?.education &&
+      JSON.stringify(educationalList) !== JSON.stringify(resumeInfos.education)
+    ) {
       setEducationalList(resumeInfos.education);
     }
   }, [resumeInfos]);
-
   const handleChange = (event, index) => {
     const newEntries = [...educationalList];
     const { name, value } = event.target;
@@ -54,7 +56,6 @@ function Education({ ActiveNext }) {
     setEducationalList((prev) => prev.slice(0, -1));
   };
 
-  // Fonction de validation pour éviter de sauvegarder les entrées vides
   const validateEducation = () => {
     return educationalList.filter(
       (edu) => edu.universityName.trim() !== "" && edu.degree.trim() !== ""
@@ -77,7 +78,6 @@ function Education({ ActiveNext }) {
         ActiveNext(true);
         toast("Details updated!");
 
-        // Met à jour resumeInfos et localStorage avec les entrées valides
         setResumeInfos((prev) => {
           const updatedInfos = { ...prev, education: validEducationalList };
           localStorage.setItem("resumeInfos", JSON.stringify(updatedInfos)); // Sauvegarder dans localStorage
@@ -90,7 +90,6 @@ function Education({ ActiveNext }) {
       });
   };
 
-  // Charger les données depuis localStorage au chargement initial
   useEffect(() => {
     const savedInfos = localStorage.getItem("resumeInfos");
     if (savedInfos) {
@@ -98,7 +97,6 @@ function Education({ ActiveNext }) {
     }
   }, []);
 
-  // Met à jour le localStorage chaque fois que educationalList change, en filtrant les entrées vides
   useEffect(() => {
     const validEducationalList = validateEducation();
 

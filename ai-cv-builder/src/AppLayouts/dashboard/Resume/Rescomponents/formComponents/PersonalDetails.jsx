@@ -18,7 +18,6 @@ function PersonalDetails({ ActiveNext }) {
     const storedData = localStorage.getItem("formData");
     if (storedData) {
       const parsedData = JSON.parse(storedData);
-      // console.log("Loaded data from localStorage:", parsedData);
       if (parsedData) {
         setFormData(parsedData);
         setResumeInfos(parsedData);
