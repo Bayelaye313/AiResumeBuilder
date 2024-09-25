@@ -62,32 +62,41 @@ function Education({ ActiveNext }) {
     );
   };
 
-  const onSave = () => {
+  const onSave = async () => {
     setLoading(true);
-    const validEducationalList = validateEducation();
 
-    const data = {
-      data: {
-        education: validEducationalList.map(({ id, ...rest }) => rest),
-      },
-    };
+    try {
+      // Récupérer l'ID à partir du resumeId
+      const response = await GlobalApi.GetResumeByResumeId(params.resumeId);
+      const resumeId = response?.data?.data[0]?.id;
 
-    GlobalApi.UpdateResumeDetail(params.resumeId, data)
-      .then((resp) => {
+      if (resumeId) {
+        const validEducationalList = validateEducation();
+
+        const data = {
+          data: {
+            education: validEducationalList.map(({ id, ...rest }) => rest),
+          },
+        };
+
+        await GlobalApi.UpdateResumeDetail(resumeId, data);
         setLoading(false);
         ActiveNext(true);
-        toast("Details updated!");
+        toast.success("Education details updated!");
 
         setResumeInfos((prev) => {
           const updatedInfos = { ...prev, education: validEducationalList };
-          localStorage.setItem("resumeInfos", JSON.stringify(updatedInfos)); // Sauvegarder dans localStorage
+          localStorage.setItem("resumeInfos", JSON.stringify(updatedInfos));
           return updatedInfos;
         });
-      })
-      .catch((error) => {
-        setLoading(false);
-        toast("Server Error, Please try again!");
-      });
+      } else {
+        toast.error("Resume not found");
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Failed to update education details", error);
+      toast.error("Failed to update education details");
+    }
   };
 
   useEffect(() => {

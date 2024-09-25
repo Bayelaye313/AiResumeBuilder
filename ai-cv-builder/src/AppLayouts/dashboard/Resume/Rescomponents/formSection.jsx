@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { InfosContext } from "@/HandleContext/InfosContext";
 import PersonalDetails from "./formComponents/PersonalDetails";
 import SummeryDetails from "./formComponents/SummeryDetails";
@@ -7,11 +7,15 @@ import Education from "./formComponents/Education";
 import Skills from "./formComponents/Skills";
 import Experience from "./formComponents/ExperienceDetails";
 import ProgressTracker from "@/components/customs/ProgressTracker";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ThemeColor from "./ThemeColor";
+import HomePage from "@/AppLayouts/home/homePage";
 
 function FormSection() {
   const { resumeId } = useParams();
+  const navigation = useNavigate();
+
   const { resumeInfos } = useContext(InfosContext);
   const [step, setStep] = useState(() => {
     const savedStep = localStorage.getItem("resumeStep");
@@ -35,32 +39,49 @@ function FormSection() {
   return (
     <div>
       <ProgressTracker steps={steps} currentStep={step} />
-
-      <div className="flex justify-end gap-2 mb-4 my-4">
-        {step > 1 && (
+      <div className="flex mb-4 my-4 justify-between ">
+        <div className="flex gap-5 ">
+          <Link to={"/dashboard"}>
+            <Button>
+              <Home />
+            </Button>
+          </Link>
+          <ThemeColor />
+        </div>
+        <div className="flex justify-end gap-2 ">
+          {step > 1 && (
+            <Button
+              className="flex gap-2"
+              size="sm"
+              onClick={() => setStep(step - 1)}
+            >
+              <ArrowLeft /> Prev
+            </Button>
+          )}
           <Button
-            className="flex gap-2"
+            disabled={!ActiveNext}
             size="sm"
-            onClick={() => setStep(step - 1)}
+            onClick={() => setStep(step + 1)}
           >
-            <ArrowLeft /> Prev
+            Next <ArrowRight />
           </Button>
-        )}
-        <Button
-          disabled={!ActiveNext}
-          size="sm"
-          onClick={() => setStep(step + 1)}
-        >
-          Next <ArrowRight />
-        </Button>
+        </div>
       </div>
-
       {step === 1 && <PersonalDetails ActiveNext={(e) => setActiveNext(e)} />}
       {step === 2 && <SummeryDetails ActiveNext={(e) => setActiveNext(e)} />}
       {step === 3 && <Experience ActiveNext={(e) => setActiveNext(e)} />}
       {step === 4 && <Education ActiveNext={(e) => setActiveNext(e)} />}
       {step === 5 && <Skills ActiveNext={(e) => setActiveNext(e)} />}
-      {step === 6 && <Navigate to={`/viewMyResume/${resumeId}/viewResume`} />}
+      {step === 6 && (
+        <div>
+          <Button
+            size="sm"
+            onClick={() => navigation(`/viewMyResume/${resumeId}/viewResume`)}
+          >
+            Finish and View Resume
+          </Button>
+        </div>
+      )}{" "}
     </div>
   );
 }

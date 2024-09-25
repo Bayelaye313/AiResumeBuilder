@@ -65,25 +65,39 @@ function Skills({ ActiveNext }) {
     }
   };
 
-  const onSave = () => {
+  const onSave = async () => {
     setLoading(true);
-    const data = {
-      data: {
-        skills: skillsList.map(({ id, ...rest }) => rest),
-      },
-    };
 
-    GlobalApi.UpdateResumeDetail(resumeId, data)
-      .then((resp) => {
+    try {
+      // Récupérer l'ID à partir du resumeId
+      const response = await GlobalApi.GetResumeByResumeId(resumeId);
+      const resumeIdInternal = response?.data?.data[0]?.id;
+
+      if (resumeIdInternal) {
+        const data = {
+          data: {
+            skills: skillsList.map(({ id, ...rest }) => rest),
+          },
+        };
+
+        await GlobalApi.UpdateResumeDetail(resumeIdInternal, data);
         setLoading(false);
         ActiveNext(true);
         localStorage.setItem("skillsList", JSON.stringify(skillsList));
-        toast("Details updated !");
-      })
-      .catch((error) => {
-        setLoading(false);
-        toast("Server Error, Try again!");
-      });
+        toast.success("Skills updated!");
+
+        setResumeInfos((prev) => ({
+          ...prev,
+          skills: skillsList,
+        }));
+      } else {
+        toast.error("Resume not found");
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Failed to update skills", error);
+      toast.error("Failed to update skills");
+    }
   };
 
   useEffect(() => {

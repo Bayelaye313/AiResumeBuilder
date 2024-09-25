@@ -76,24 +76,33 @@ function Experience({ ActiveNext }) {
   }, [experienceList]);
 
   // Save experience details
-  const onSave = () => {
+  const onSave = async () => {
     setLoading(true);
-    const data = {
-      data: {
-        experience: experienceList.map(({ id, ...rest }) => rest),
-      },
-    };
 
-    GlobalApi.UpdateResumeDetail(params.resumeId, data)
-      .then(() => {
+    try {
+      // Récupérer l'ID à partir du resumeId
+      const response = await GlobalApi.GetResumeByResumeId(params.resumeId);
+      const resumeId = response?.data?.data[0]?.id;
+
+      if (resumeId) {
+        const data = {
+          data: {
+            experience: experienceList.map(({ id, ...rest }) => rest),
+          },
+        };
+
+        await GlobalApi.UpdateResumeDetail(resumeId, data);
         setLoading(false);
         ActiveNext(true);
-        toast("Details updated!");
-      })
-      .catch(() => {
-        setLoading(false);
-        toast.error("Failed to update experience details");
-      });
+        toast.success("Experience details updated!");
+      } else {
+        toast.error("Resume not found");
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Failed to update experience details", error);
+      toast.error("Failed to update experience details");
+    }
   };
 
   return (

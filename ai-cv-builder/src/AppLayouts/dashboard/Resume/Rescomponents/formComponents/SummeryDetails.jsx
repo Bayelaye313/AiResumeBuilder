@@ -58,17 +58,25 @@ function SummeryDetails({ ActiveNext }) {
     e.preventDefault();
     setLoading(true);
 
-    const data = { data: { summery: summeryData } };
     try {
-      await GlobalApi.UpdateResumeDetail(params?.resumeId, data);
-      toast.success("Summary updated successfully");
-      setResumeInfos({ ...resumeInfos, summery: summeryData });
-      localStorage.setItem(
-        "resumeInfos",
-        JSON.stringify({ ...resumeInfos, summery: summeryData })
-      );
-      ActiveNext(true);
-    } catch {
+      // Récupérer l'ID à partir du resumeId
+      const response = await GlobalApi.GetResumeByResumeId(params?.resumeId);
+      const resumeId = response?.data?.data[0]?.id; // Assure-toi qu'il y a une donnée retournée
+
+      if (resumeId) {
+        const data = { data: { summery: summeryData } };
+        await GlobalApi.UpdateResumeDetail(resumeId, data);
+        toast.success("Summary updated successfully");
+        setResumeInfos({ ...resumeInfos, summery: summeryData });
+        localStorage.setItem(
+          "resumeInfos",
+          JSON.stringify({ ...resumeInfos, summery: summeryData })
+        );
+        ActiveNext(true);
+      } else {
+        toast.error("Resume not found");
+      }
+    } catch (error) {
       toast.error("Failed to update summary");
     } finally {
       setLoading(false);

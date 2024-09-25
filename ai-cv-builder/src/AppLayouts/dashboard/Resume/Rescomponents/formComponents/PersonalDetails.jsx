@@ -40,22 +40,29 @@ function PersonalDetails({ ActiveNext }) {
     ActiveNext(true);
   };
 
-  const onSave = (e) => {
+  const onSave = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const data = { data: formData };
 
-    GlobalApi.UpdateResumeDetail(params?.resumeId, data).then(
-      (resp) => {
+    try {
+      // Récupérer l'ID à partir du resumeId
+      const response = await GlobalApi.GetResumeByResumeId(params?.resumeId);
+      const resumeId = response?.data?.data[0]?.id;
+
+      if (resumeId) {
+        const data = { data: formData };
+        await GlobalApi.UpdateResumeDetail(resumeId, data);
         ActiveNext(true);
-        setLoading(false);
-        toast("Details updated");
-      },
-      (error) => {
-        setLoading(false);
-        console.error("Failed to update details", error);
+        toast.success("Details updated successfully");
+      } else {
+        toast.error("Resume not found");
       }
-    );
+    } catch (error) {
+      console.error("Failed to update details", error);
+      toast.error("Failed to update details");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
